@@ -1,23 +1,57 @@
-version: '3.8'
-
 services:
+
+  # ── PostgreSQL ──────────────────────────────────────────────
   postgres:
     image: postgres:16-alpine
     container_name: nexus_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: nexus_user
-      POSTGRES_PASSWORD: nexus_password
-      POSTGRES_DB: nexus_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: m010205258
+      POSTGRES_DB: nexus_operations
     ports:
       - "5432:5432"
     volumes:
       - nexus_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U nexus_user -d nexus_db"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nexus_operations"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # ── Express API ─────────────────────────────────────────────
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: nexus_api
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://postgres:m010205258@postgres:5432/nexus_operations?schema=public
+      JWT_SECRET: "9be266abfc6b3a70c9d4bfcc528219814db83ee3e86e9588ca956a7c55507e306e18c097e7ffce401d3416473adfb88bcae81a295424f0b5155ddc7f681c977b"
+      JWT_EXPIRES_IN: "7d"
+      PORT: 3001
+      NODE_ENV: development
+      CLIENT_URL: "http://localhost:3000"
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # ── Vite Frontend ───────────────────────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nexus_frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: "http://localhost:3001"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
 
 volumes:
   nexus_postgres_data:
