@@ -1,0 +1,405 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Models ────────────────────────────────────────────────────────────────
+
+model User {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  avatar       String     @default("1.png")
+  role         String     @default("Agent")
+  status       String     @default("online")
+  team         String     @default("Support Team A")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  assignedTickets  Ticket[]        @relation("AssignedUser")
+  ticketMessages   TicketMessage[]
+  annotations      Annotation[]
+  reminders        Reminder[]
+  notifications    Notification[]
+  sentMessages     DirectMessage[] @relation("SentMessages")
+  receivedMessages DirectMessage[] @relation("ReceivedMessages")
+  settings         UserSettings?
+
+  @@map("users")
+}
+
+model ClientProfile {
+  id                   String             @id @default(cuid())
+  name                 String
+  company              String
+  avatar               String             @default("1.png")
+  status               String             @default("FullAccess")
+  email                String             @unique
+  phone                String             @default("")
+  country              String             @default("")
+  city                 String             @default("")
+  timezone             String             @default("UTC")
+  localTime            String             @default("")
+  businessHoursNote    String             @default("")
+  vatNumber            String             @default("")
+  identityVerification String             @default("Pending")
+  verificationDetails  String             @default("")
+  contractStatus       String             @default("Active")
+  companyRegNo         String             @default("")
+  language             String             @default("English")
+  totalRevenue         String             @default("€0")
+  avgCsat              Float              @default(0)
+  npsScore             Int                @default(0)
+  paymentReliability   String             @default("Unknown")
+  flags                String             @default("[]") // JSON stringified array
+  additionalLanguages  String             @default("[]") // JSON stringified array
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  tickets        Ticket[]
+  projects       Project[]
+  invoices       Invoice[]
+  billingPrefs   BillingPrefs?
+  portalUsers    PortalUser[]
+  childAccounts  ChildAccount[]
+
+  @@map("client_profiles")
+}
+
+model BillingPrefs {
+  id             String        @id @default(cuid())
+  clientId       String        @unique
+  client         ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  contractType   String        @default("Retainer")
+  billingCycle   String        @default("Monthly")
+  paymentTerms   String        @default("Net 30")
+  autoInvoice    Boolean       @default(true)
+  currency       String        @default("EUR")
+  vatRate        Float         @default(20)
+  withholdingTax Boolean       @default(false)
+  routingRules   RoutingRule[]
+
+  @@map("billing_prefs")
+}
+
+model RoutingRule {
+  id          String       @id @default(cuid())
+  name        String
+  condition   String
+  destination String
+  split       Int          @default(100)
+  billingId   String
+  billing     BillingPrefs @relation(fields: [billingId], references: [id], onDelete: Cascade)
+
+  @@map("routing_rules")
+}
+
+model PortalUser {
+  id              String        @id @default(cuid())
+  name            String
+  role            String
+  lastLogin       String        @default("Never")
+  twoFactor       Boolean       @default(false)
+  permissionLevel String        @default("Viewer")
+  clientId        String
+  client          ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("portal_users")
+}
+
+model ChildAccount {
+  id       String        @id @default(cuid())
+  name     String
+  status   String        @default("Active")
+  type     String        @default("Subsidiary")
+  seats    Int           @default(1)
+  projects Int           @default(0)
+  earnings String        @default("€0")
+  clientId String
+  client   ClientProfile @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@map("child_accounts")
+}
+
+model Project {
+  id            String        @id @default(cuid())
+  name          String
+  code          String        @unique
+  serviceType   String        @default("WebApp")
+  status        String        @default("OnTrack")
+  thumbnail     String        @default("1.png")
+  startDate     String
+  endDate       String
+  durationWeeks Int           @default(0)
+  locationType  String        @default("Remote")
+  teamSize      String        @default("5-10")
+  contractType  String        @default("Retainer")
+  contractPhase String        @default("Delivery")
+  contractValue String        @default("€0")
+  teamLead      String        @default("")
+  clientId      String
+  client        ClientProfile @relation(fields: [clientId], references: [id])
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  tickets     Ticket[]
+  milestones  Milestone[]
+  deployments Deployment[]
+  repos       Repo[]
+  qaRuns      QaRun[]
+  timelines   Timeline[]
+
+  @@map("projects")
+}
+
+model Timeline {
+  id        String  @id @default(cuid())
+  phase     String
+  duration  String
+  teamSize  Int     @default(0)
+  status    String  @default("Pending")
+  progress  Int     @default(0)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("timelines")
+}
+
+model Milestone {
+  id        String  @id @default(cuid())
+  name      String
+  due       String
+  status    String  @default("Pending")
+  signoff   String  @default("")
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("milestones")
+}
+
+model Deployment {
+  id        String  @id @default(cuid())
+  env       String
+  version   String
+  by        String
+  date      String
+  status    String  @default("Live")
+  rollback  Boolean @default(false)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("deployments")
+}
+
+model Repo {
+  id        String  @id @default(cuid())
+  name      String
+  branch    String  @default("main")
+  commit    String  @default("")
+  prs       Int     @default(0)
+  ci        String  @default("Passing")
+  coverage  Int     @default(0)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("repos")
+}
+
+model QaRun {
+  id        String  @id @default(cuid())
+  suite     String
+  date      String
+  passed    Int     @default(0)
+  failed    Int     @default(0)
+  coverage  Int     @default(0)
+  reportUrl String  @default("")
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@map("qa_runs")
+}
+
+model Ticket {
+  id                 String         @id @default(cuid())
+  subject            String
+  status             String         @default("Open")
+  priority           String         @default("Medium")
+  clientId           String
+  client             ClientProfile  @relation(fields: [clientId], references: [id])
+  clientName         String
+  clientCompany      String
+  clientAvatar       String         @default("1.png")
+  clientOutsideHours Boolean        @default(false)
+  assignedToId       String?
+  assignedTo         User?          @relation("AssignedUser", fields: [assignedToId], references: [id])
+  assignedToName     String         @default("")
+  assignedTeam       String         @default("")
+  projectId          String?
+  project            Project?       @relation(fields: [projectId], references: [id])
+  projectName        String         @default("")
+  projectService     String         @default("WebApp")
+  projectThumb       String         @default("1.png")
+  lastMessage        String         @default("")
+  lastMessageTime    String         @default("")
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  messages    TicketMessage[]
+  annotations Annotation[]
+  attachments Attachment[]
+
+  @@map("tickets")
+}
+
+model TicketMessage {
+  id         String   @id @default(cuid())
+  ticketId   String
+  ticket     Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  senderId   String?
+  sender     User?    @relation(fields: [senderId], references: [id])
+  senderName String
+  avatar     String   @default("1.png")
+  role       String   @default("Agent")
+  content    String
+  isInternal Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  @@map("ticket_messages")
+}
+
+model Annotation {
+  id        String   @id @default(cuid())
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  agentId   String?
+  agent     User?    @relation(fields: [agentId], references: [id])
+  agentName String
+  avatar    String   @default("1.png")
+  text      String
+  createdAt DateTime @default(now())
+
+  @@map("annotations")
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  name      String
+  size      String   @default("")
+  type      String   @default("file")
+  path      String   @default("")
+  uploader  String
+  sensitive Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@map("attachments")
+}
+
+model Invoice {
+  id          String        @id @default(cuid())
+  clientId    String
+  client      ClientProfile @relation(fields: [clientId], references: [id])
+  projectName String        @default("")
+  amount      String
+  dueDate     String
+  status      String        @default("Pending")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("invoices")
+}
+
+model Reminder {
+  id         String           @id @default(cuid())
+  title      String
+  dueDate    String
+  entityType String           @default("")
+  entityId   String           @default("")
+  entityName String           @default("")
+  priority   String           @default("medium")
+  completed  Boolean          @default(false)
+  userId     String
+  user       User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt  DateTime         @default(now())
+
+  @@map("reminders")
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      String           @default("Update")
+  title     String
+  content   String
+  link      String?
+  read      Boolean          @default(false)
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime         @default(now())
+
+  @@map("notifications")
+}
+
+model DirectMessage {
+  id          String   @id @default(cuid())
+  senderId    String
+  sender      User     @relation("SentMessages", fields: [senderId], references: [id])
+  recipientId String
+  recipient   User     @relation("ReceivedMessages", fields: [recipientId], references: [id])
+  content     String
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  @@map("direct_messages")
+}
+
+model KnowledgeArticle {
+  id           String   @id @default(cuid())
+  title        String
+  category     String
+  isLocked     Boolean  @default(false)
+  description  String   @default("")
+  tags         String   @default("[]") // JSON stringified array
+  body         String   @default("")
+  author       String
+  authorAvatar String   @default("1.png")
+  views        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("knowledge_articles")
+}
+
+model UserSettings {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  showNotifications Boolean  @default(true)
+  notifyNewReply    Boolean  @default(true)
+  notifyNewNote     Boolean  @default(true)
+  notifyNewTicket   Boolean  @default(true)
+  notifyNewMessage  Boolean  @default(true)
+  notifyDeployment  Boolean  @default(true)
+  notifyInvoice     Boolean  @default(true)
+  notifyClient      Boolean  @default(true)
+  notifySla         Boolean  @default(true)
+  language          String   @default("en")
+  dateFormat        String   @default("DD/MM/YYYY")
+  timeFormat        String   @default("24h")
+  timezone          String   @default("Europe/Paris")
+  rtlMode           Boolean  @default(false)
+  darkMode          String   @default("Dark")
+  accentColor       String   @default("#6366F1")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("user_settings")
+}

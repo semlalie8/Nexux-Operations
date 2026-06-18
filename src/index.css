@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-base: #0A0A0F;
+    --bg-surface: #111118;
+    --bg-elevated: #16161F;
+    --border: #1E1E2E;
+    
+    --accent-primary: #6366F1;
+    --accent-success: #10B981;
+    --accent-warning: #F59E0B;
+    --accent-danger: #EF4444;
+    
+    --text-primary: #F8FAFC;
+    --text-secondary: #94A3B8;
+    --text-muted: #475569;
+  }
+
+  body {
+    background-color: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Syne', sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* ── Custom Scrollbars ─────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ── Skeleton Pulse ───────────────────────────────────────────────────────── */
+@keyframes pulse-bg {
+  0%, 100% { background-color: #16161F; }
+  50% { background-color: #232331; }
+}
+
+.animate-pulse-skeleton {
+  animation: pulse-bg 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* ── Slide-in from left ───────────────────────────────────────────────────── */
+@keyframes slide-in {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide-in {
+  animation: slide-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Slide-in from right ──────────────────────────────────────────────────── */
+@keyframes slide-in-right {
+  from { transform: translateX(20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+.animate-slide-in-right {
+  animation: slide-in-right 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Fade in ──────────────────────────────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Scale in modal ───────────────────────────────────────────────────────── */
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in {
+  animation: scale-in 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* ── Glassmorphism panel ──────────────────────────────────────────────────── */
+.glass-panel {
+  background: rgba(17, 17, 24, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+}
+
+/* ── RTL support helpers ──────────────────────────────────────────────────── */
+[dir="rtl"] .animate-slide-in {
+  animation-name: slide-in-right;
+}
+
+/* ── Shimmer loading effect ───────────────────────────────────────────────── */
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.shimmer {
+  background: linear-gradient(90deg, #16161F 25%, #232331 50%, #16161F 75%);
+  background-size: 800px 100%;
+  animation: shimmer 1.6s infinite linear;
+}
+
+/* ── Micro hover lift ─────────────────────────────────────────────────────── */
+.hover-lift {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ── Priority badge blink for Urgent ─────────────────────────────────────── */
+@keyframes priority-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+.priority-urgent-pulse {
+  animation: priority-pulse 1.5s ease-in-out infinite;
+}
+
+/* ── Accent color dynamic variable ───────────────────────────────────────── */
+.accent-glow {
+  box-shadow: 0 0 0 1px var(--accent-primary), 0 0 12px rgba(99, 102, 241, 0.3);
+}
