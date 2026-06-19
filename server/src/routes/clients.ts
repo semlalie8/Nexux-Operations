@@ -29,7 +29,7 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   try {
     const client = await prisma.clientProfile.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       include: {
         billingPrefs: { include: { routingRules: true } },
         portalUsers: true,

@@ -38,7 +38,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   try {
     const ticket = await prisma.ticket.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       include: {
         messages: { orderBy: { createdAt: 'asc' } },
         annotations: { orderBy: { createdAt: 'asc' } },
@@ -112,7 +112,7 @@ router.put('/:id/status', async (req: Request, res: Response): Promise<void> => 
   try {
     const { status } = req.body;
     const ticket = await prisma.ticket.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: { status, updatedAt: new Date() },
     });
     res.json({ ticket });
@@ -127,7 +127,7 @@ router.put('/:id/priority', async (req: Request, res: Response): Promise<void> =
   try {
     const { priority } = req.body;
     const ticket = await prisma.ticket.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: { priority, updatedAt: new Date() },
     });
     res.json({ ticket });
@@ -150,7 +150,7 @@ router.post('/:id/messages', async (req: Request, res: Response): Promise<void> 
 
     const message = await prisma.ticketMessage.create({
       data: {
-        ticketId: req.params.id,
+        ticketId: req.params.id as string,
         senderId: req.user!.userId,
         senderName: user?.name || 'Agent',
         avatar: user?.avatar || '1.png',
@@ -162,7 +162,7 @@ router.post('/:id/messages', async (req: Request, res: Response): Promise<void> 
 
     // Update last message on ticket
     await prisma.ticket.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: {
         lastMessage: content.substring(0, 80),
         lastMessageTime: 'Just now',
@@ -190,7 +190,7 @@ router.post('/:id/annotations', async (req: Request, res: Response): Promise<voi
 
     const annotation = await prisma.annotation.create({
       data: {
-        ticketId: req.params.id,
+        ticketId: req.params.id as string,
         agentId: req.user!.userId,
         agentName: user?.name || 'Agent',
         avatar: user?.avatar || '1.png',

@@ -29,7 +29,7 @@ import QuickLinksPanel from './components/drawers/QuickLinksPanel';
 import MessagingPanel from './components/drawers/MessagingPanel';
 
 export const App: React.FC = () => {
-  const { acknowledgedPrivacy, acknowledgePrivacy, settings, login, logout, isAuthenticated } = useNexusStore();
+  const { acknowledgedPrivacy, acknowledgePrivacy, settings, login, isAuthenticated } = useNexusStore();
   const [activeDrawer, setActiveDrawer] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [sessionChecked, setSessionChecked] = useState(false);

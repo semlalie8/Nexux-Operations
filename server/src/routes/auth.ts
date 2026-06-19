@@ -35,7 +35,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     const token = jwt.sign(
       { userId: user.id, role: user.role, email: user.email },
       process.env.JWT_SECRET!,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+      { expiresIn: (process.env.JWT_EXPIRES_IN || '7d') as any }
     );
 
     // Set HTTP-only cookie
@@ -66,7 +66,6 @@ router.get('/me', authenticate, async (req: Request, res: Response): Promise<voi
     const user = await prisma.user.findUnique({
       where: { id: req.user!.userId },
       include: { settings: true },
-      omit: { passwordHash: true },
     });
 
     if (!user) {
@@ -74,7 +73,8 @@ router.get('/me', authenticate, async (req: Request, res: Response): Promise<voi
       return;
     }
 
-    res.json({ user });
+    const { passwordHash, ...safeUser } = user;
+    res.json({ user: safeUser });
   } catch (error) {
     console.error('Get me error:', error);
     res.status(500).json({ error: 'Internal server error' });

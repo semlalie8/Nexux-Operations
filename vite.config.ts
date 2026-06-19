@@ -13,7 +13,7 @@ export default defineConfig({
       // Forward all /api requests to the Express server
       // Works both locally (localhost:3001) and in Docker (http://api:3001)
       '/api': {
-        target: process.env.VITE_API_URL || 'http://localhost:3001',
+        target: process.env.API_URL || 'http://localhost:3001',
         changeOrigin: true,
       },
     },

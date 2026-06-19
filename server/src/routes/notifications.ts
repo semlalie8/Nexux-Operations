@@ -23,8 +23,8 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 // PUT /api/notifications/:id/read
 router.put('/:id/read', async (req: Request, res: Response): Promise<void> => {
   try {
-    await prisma.notification.update({
-      where: { id: req.params.id, userId: req.user!.userId },
+    await prisma.notification.updateMany({
+      where: { id: req.params.id as string, userId: req.user!.userId },
       data: { read: true },
     });
     res.json({ success: true });
@@ -87,13 +87,16 @@ router.post('/reminders', async (req: Request, res: Response): Promise<void> => 
 // PUT /api/reminders/:id/toggle
 router.put('/reminders/:id/toggle', async (req: Request, res: Response): Promise<void> => {
   try {
-    const reminder = await prisma.reminder.findUnique({ where: { id: req.params.id } });
-    if (!reminder) { res.status(404).json({ error: 'Not found' }); return; }
-    const updated = await prisma.reminder.update({
-      where: { id: req.params.id },
-      data: { completed: !reminder.completed },
-    });
-    res.json({ reminder: updated });
+    const reminder = await prisma.reminder.findUnique({ where: { id: req.params.id as string } });
+    if (reminder && reminder.userId === req.user!.userId) {
+      const updated = await prisma.reminder.update({
+        where: { id: req.params.id as string },
+        data: { completed: !reminder.completed },
+      });
+      res.json({ reminder: updated });
+    } else {
+      res.status(404).json({ error: 'Not found' });
+    }
   } catch (error) {
     console.error('Toggle reminder error:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -103,8 +106,8 @@ router.put('/reminders/:id/toggle', async (req: Request, res: Response): Promise
 // DELETE /api/reminders/:id
 router.delete('/reminders/:id', async (req: Request, res: Response): Promise<void> => {
   try {
-    await prisma.reminder.delete({ where: { id: req.params.id, userId: req.user!.userId } });
-    res.json({ success: true });
+    await prisma.reminder.delete({ where: { id: req.params.id as string, userId: req.user!.userId } });
+    res.json({ message: 'Reminder deleted' });
   } catch (error) {
     console.error('Delete reminder error:', error);
     res.status(500).json({ error: 'Internal server error' });

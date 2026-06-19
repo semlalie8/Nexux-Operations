@@ -33,7 +33,7 @@ router.get('/', async (req: Request, res: Response): Promise<void> => {
 router.get('/:id', async (req: Request, res: Response): Promise<void> => {
   try {
     const article = await prisma.knowledgeArticle.findUnique({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
     });
 
     if (!article) {
@@ -43,7 +43,7 @@ router.get('/:id', async (req: Request, res: Response): Promise<void> => {
 
     // Increment views
     await prisma.knowledgeArticle.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: { views: { increment: 1 } },
     });
 
@@ -90,7 +90,7 @@ router.put('/:id', async (req: Request, res: Response): Promise<void> => {
   try {
     const { title, category, isLocked, description, tags, body } = req.body;
     const article = await prisma.knowledgeArticle.update({
-      where: { id: req.params.id },
+      where: { id: req.params.id as string },
       data: { title, category, isLocked, description, tags, body },
     });
     res.json({ article });
@@ -103,7 +103,7 @@ router.put('/:id', async (req: Request, res: Response): Promise<void> => {
 // DELETE /api/knowledge/:id
 router.delete('/:id', async (req: Request, res: Response): Promise<void> => {
   try {
-    await prisma.knowledgeArticle.delete({ where: { id: req.params.id } });
+    await prisma.knowledgeArticle.delete({ where: { id: req.params.id as string } });
     res.json({ message: 'Article deleted' });
   } catch (error) {
     console.error('Delete article error:', error);

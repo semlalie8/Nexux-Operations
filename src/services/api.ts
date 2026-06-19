@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { useNexusStore } from '../store/nexusStore';
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '',
+  baseURL: '',
   withCredentials: true, // send HTTP-only cookie automatically
   headers: { 'Content-Type': 'application/json' },
 });
@@ -11,8 +12,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Redirect to login if session expired
-      window.location.href = '/login';
+      useNexusStore.getState().logout();
     }
     return Promise.reject(error);
   }
