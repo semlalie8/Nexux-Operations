@@ -133,4 +133,14 @@ export const settingsApi = {
     api.put('/api/settings', data).then((r) => r.data),
 };
 
+// ─── System ──────────────────────────────────────────────────────────────────
+
+export const systemApi = {
+  getStatus: () =>
+    api.get('/api/system/status').then((r) => r.data),
+
+  setMode: (mode: string) =>
+    api.put('/api/system/mode', { mode }).then((r) => r.data),
+};
+
 export default api;

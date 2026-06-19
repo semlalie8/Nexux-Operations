@@ -403,3 +403,16 @@ model UserSettings {
 
   @@map("user_settings")
 }
+
+// ─── System Configuration ────────────────────────────────────────────────────
+
+model SystemConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique  // e.g. "system_mode"
+  value     String            // e.g. "production"
+  updatedAt DateTime @updatedAt
+  updatedBy String   @default("system") // email of admin who last changed it
+
+  @@map("system_config")
+}
+

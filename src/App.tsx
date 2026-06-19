@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useNexusStore } from './store/nexusStore';
 import { authApi } from './services/api';
+import { useSystemMode } from './hooks/useSystemMode';
 
 // Shell
 import SystemBanner from './components/SystemBanner';
@@ -33,6 +34,9 @@ export const App: React.FC = () => {
   const [activeDrawer, setActiveDrawer] = useState<string | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [sessionChecked, setSessionChecked] = useState(false);
+
+  // Fetch and poll system mode from backend
+  useSystemMode();
 
   // Attempt to restore session from HTTP-only cookie on mount
   useEffect(() => {

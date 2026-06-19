@@ -65,8 +65,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
         {/* Brand / Logo & Pin */}
         <div className="hidden md:flex items-center justify-between px-3.5 mb-6 h-8">
           <div className="flex items-center gap-2 overflow-hidden">
-            <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-heading font-black text-white text-base flex-shrink-0">
-              N
+            <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0 border border-accent-primary/20">
+              <img src="/logo.png" alt="Nexus Logo" className="w-full h-full object-cover" />
             </div>
             {(isExpanded || isPinned) && (
               <span className="font-heading font-bold text-lg text-text-primary tracking-wider animate-fade-in">

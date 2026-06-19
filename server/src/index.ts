@@ -12,6 +12,10 @@ import projectsRouter from './routes/projects';
 import knowledgeRouter from './routes/knowledge';
 import notificationsRouter from './routes/notifications';
 import settingsRouter from './routes/settings';
+import systemRouter from './routes/system';
+
+// Middleware
+import { systemModeMiddleware } from './middleware/systemMode';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -26,6 +30,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// System mode enforcement — runs on every request
+app.use(systemModeMiddleware);
+
 // ─── Health Check ────────────────────────────────────────────────────────────
 
 app.get('/health', (_req, res) => {
@@ -34,6 +41,7 @@ app.get('/health', (_req, res) => {
 
 // ─── API Routes ──────────────────────────────────────────────────────────────
 
+app.use('/api/system', systemRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/tickets', ticketsRouter);
 app.use('/api/clients', clientsRouter);
@@ -60,6 +68,7 @@ app.listen(PORT, async () => {
   }
   console.log(`🚀  Nexus API running on http://localhost:${PORT}`);
   console.log(`📡  Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔒  System mode: ${process.env.APP_MODE || 'production'} (DB-persisted)`);
 });
 
 // Graceful shutdown

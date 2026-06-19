@@ -179,6 +179,8 @@ export interface Settings {
   accentColor: string;
 }
 
+export type SystemMode = 'production' | 'readonly' | 'maintenance' | 'p0' | 'info';
+
 export interface NexusState {
   user: User;
   acknowledgedPrivacy: boolean;
@@ -192,7 +194,14 @@ export interface NexusState {
   messages: DirectMessage[];
   feedbackList: Array<{ id: string; feature: string; detail: string; date: string }>;
   settings: Settings;
-  
+
+  // System mode
+  systemMode: SystemMode;
+  writesAllowed: boolean;
+  modeMessage: string;
+  modeUpdatedBy: string;
+  modeUpdatedAt: string | null;
+
   isAuthenticated: boolean;
   // Actions
   login: (role: User['role']) => void;
@@ -215,6 +224,7 @@ export interface NexusState {
   addBillingRoutingRule: (clientId: string, name: string, condition: string, destination: string, split: number) => void;
   removeBillingRoutingRule: (clientId: string, ruleId: string) => void;
   submitBugReport: (bug: { severity: string; category: string; description: string }) => void;
+  setSystemMode: (mode: SystemMode, writesAllowed: boolean, message: string, updatedBy: string, updatedAt: string | null) => void;
 }
 
 export const useNexusStore = create<NexusState>((set) => {
@@ -549,6 +559,12 @@ export const useNexusStore = create<NexusState>((set) => {
     isAuthenticated: false,
     acknowledgedPrivacy: false,
     activeTicketId: 'TCK-9481',
+    // System mode defaults — overwritten immediately by useSystemMode hook on app boot
+    systemMode: 'production',
+    writesAllowed: true,
+    modeMessage: '🟢 Live production environment — all operations active',
+    modeUpdatedBy: 'system',
+    modeUpdatedAt: null,
     tickets: initialTickets,
     projects: initialProjects,
     clients: initialClients,
@@ -847,6 +863,9 @@ export const useNexusStore = create<NexusState>((set) => {
       return {
         notifications: [newNotif, ...state.notifications]
       };
-    })
+    }),
+
+    setSystemMode: (mode, writesAllowed, message, updatedBy, updatedAt) =>
+      set({ systemMode: mode, writesAllowed, modeMessage: message, modeUpdatedBy: updatedBy, modeUpdatedAt: updatedAt }),
   };
 });

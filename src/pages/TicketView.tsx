@@ -24,8 +24,8 @@ import { BugReportPanel } from '../components/drawers/BugReportPanel';
 
 export const TicketView: React.FC = () => {
   const { 
-    tickets, activeTicketId, clients, projects, user, 
-    updateTicketStatus, addTicketMessage 
+    tickets, activeTicketId, clients, projects, user,
+    updateTicketStatus, addTicketMessage, writesAllowed, systemMode
   } = useNexusStore();
 
   const ticket = tickets.find(t => t.id === activeTicketId) || tickets[0];
@@ -89,7 +89,7 @@ export const TicketView: React.FC = () => {
     }
   };
 
-  const isReadOnlyMode = user.role === 'Trainee';
+  const isReadOnlyMode = user.role === 'Trainee' || !writesAllowed;
 
   const rightSidebarIcons = [
     { id: 'notes', icon: '✏️', tooltip: 'Case Notes' },
@@ -470,6 +470,13 @@ export const TicketView: React.FC = () => {
                   {isInternalNote ? 'Post Note' : 'Send Message'}
                 </button>
               </div>
+              {/* System lock overlay on reply form */}
+              {!writesAllowed && (
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/5 border border-amber-500/20 text-amber-400 text-xs mb-2">
+                  <span>🔒</span>
+                  <span>System is in <span className="font-bold uppercase">{systemMode}</span> mode — replies are disabled.</span>
+                </div>
+              )}
             </form>
           </div>
         </div>
