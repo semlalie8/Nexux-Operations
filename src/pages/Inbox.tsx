@@ -94,7 +94,7 @@ export const Inbox: React.FC<InboxProps> = ({ standalone = true, onClose }) => {
   );
 
   return (
-    <div className="flex flex-col h-full bg-bg-surface border-r border-border w-[280px]">
+    <div className="flex flex-col h-full bg-bg-surface border-r border-border w-full md:w-[280px] shrink-0">
       {/* Header */}
       <div className="p-4 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">

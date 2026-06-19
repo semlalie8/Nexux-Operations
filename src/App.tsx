@@ -86,8 +86,10 @@ export const App: React.FC = () => {
   const rtlClass = isRtl ? 'rtl' : 'ltr';
   const flexDir = isRtl ? 'flex-row-reverse' : 'flex-row';
   
-  // Padding based on sidebar position
-  const mainPadding = isRtl ? 'pr-[60px] pl-0' : 'pl-[60px] pr-0';
+  // Padding based on sidebar position (bottom on mobile, side on desktop)
+  const mainPadding = isRtl 
+    ? 'pr-0 md:pr-[60px] pl-0 pb-[64px] md:pb-0' 
+    : 'pl-0 md:pl-[60px] pr-0 pb-[64px] md:pb-0';
 
   // Show nothing until session check completes
   if (!sessionChecked) {
@@ -118,7 +120,7 @@ export const App: React.FC = () => {
         <SystemBanner />
 
         {/* Global Application Grid */}
-        <div className={`flex flex-1 relative ${flexDir}`}>
+        <div className={`flex flex-1 relative w-full overflow-x-hidden ${flexDir}`}>
           {/* Collapsible Navigation Sidebar */}
           <Sidebar 
             onOpenDrawer={handleOpenDrawer}
@@ -128,11 +130,11 @@ export const App: React.FC = () => {
           {/* Sliding Left Drawers (overlaying main area, adjacent to sidebar) */}
           {activeDrawer && (
             <div 
-              className={`fixed inset-y-0 z-30 flex bg-black/45 backdrop-blur-sm transition-all duration-300 w-[calc(100vw-60px)] ${
-                isRtl ? 'right-[60px] flex-row-reverse' : 'left-[60px] flex-row'
+              className={`fixed inset-y-0 z-30 flex bg-black/45 backdrop-blur-sm transition-all duration-300 w-full md:w-[calc(100vw-60px)] ${
+                isRtl ? 'right-0 md:right-[60px] flex-row-reverse' : 'left-0 md:left-[60px] flex-row'
               }`}
             >
-              <div className="flex-shrink-0 shadow-2xl relative z-40 bg-bg-surface">
+              <div className="flex-shrink-0 w-full md:w-auto shadow-2xl relative z-40 bg-bg-surface max-h-screen overflow-y-auto">
                 {activeDrawer === 'notifications' && (
                   <NotificationsPanel onClose={handleCloseAllDrawers} />
                 )}
@@ -174,8 +176,10 @@ export const App: React.FC = () => {
               
               {/* Inbox route renders active Ticket screen with Inbox drawer open */}
               <Route path="/inbox" element={
-                <div className="flex relative gap-6 h-[80vh] items-stretch">
-                  <Inbox standalone={false} />
+                <div className="flex flex-col md:flex-row relative gap-4 md:gap-6 h-[80vh] items-stretch">
+                  <div className="w-full md:w-auto">
+                    <Inbox standalone={false} />
+                  </div>
                   <div className="flex-1 overflow-y-auto">
                     <TicketView />
                   </div>

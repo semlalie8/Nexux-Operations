@@ -47,18 +47,18 @@ export const Projects: React.FC = () => {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex items-center justify-between bg-bg-surface/30 border border-border p-2.5 rounded-xl">
-        <button className="flex items-center gap-1.5 text-xs text-text-secondary hover:text-text-primary px-3 py-1.5 rounded-lg border border-border hover:bg-bg-elevated transition-colors font-semibold">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between bg-bg-surface/30 border border-border p-2.5 rounded-xl gap-2">
+        <button className="flex items-center justify-center sm:justify-start gap-1.5 text-xs text-text-secondary hover:text-text-primary px-3 py-1.5 rounded-lg border border-border hover:bg-bg-elevated transition-colors font-semibold">
           <SlidersHorizontal className="w-3.5 h-3.5 text-text-muted" />
           Filter options
         </button>
 
-        <div className="flex rounded-lg bg-bg-base/40 p-0.5 border border-border/60">
+        <div className="flex overflow-x-auto no-scrollbar rounded-lg bg-bg-base/40 p-0.5 border border-border/60 min-w-0 shrink-0">
           {(['All', 'On track', 'At risk'] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-1 text-[11px] font-semibold rounded-md transition-all ${
+              className={`flex-1 sm:flex-none px-3 py-1.5 sm:py-1 text-[11px] font-semibold rounded-md transition-all whitespace-nowrap ${
                 filter === f
                   ? 'bg-bg-elevated text-text-primary'
                   : 'text-text-muted hover:text-text-secondary'

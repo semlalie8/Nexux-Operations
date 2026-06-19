@@ -182,7 +182,7 @@ export const Reports: React.FC = () => {
       </div>
 
       {/* KPI Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
         <MetricCard title="Active Tickets" value="38" sub="+12% from last week" trend="up" />
         <MetricCard title="Active Projects" value="14" sub="2 marked at-risk" trend="warn" />
         <MetricCard title="Monthly Revenue" value="€195K" sub="+8.4% vs last month" trend="up" />
@@ -285,7 +285,7 @@ export const Reports: React.FC = () => {
           {/* ── FINANCIAL ── */}
           {activeTab === 'financial' && (
             <div className="space-y-6">
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <div className="bg-bg-elevated/30 border border-border/40 rounded-xl p-4">
                   <div className="text-[10px] text-text-muted font-mono uppercase mb-1">Total Revenue YTD</div>
                   <div className="text-2xl font-bold font-mono text-text-primary">€1.01M</div>
@@ -465,7 +465,7 @@ export const Reports: React.FC = () => {
           {activeTab === 'sla' && (
             <div className="space-y-6">
               {/* Summary banner */}
-              <div className="grid grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
                   { label: 'Overall SLA', value: '96.8%', color: ACCENT, icon: <CheckCircle className="w-4 h-4" /> },
                   { label: 'Target', value: '95.0%', color: SUCCESS, icon: <Clock className="w-4 h-4" /> },

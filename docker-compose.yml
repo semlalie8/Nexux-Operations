@@ -47,7 +47,7 @@ services:
     container_name: nexus_frontend
     restart: unless-stopped
     environment:
-      VITE_API_URL: ""
+      VITE_API_URL: "http://api:3001"
       DOCKER: "true"
     ports:
       - "3000:3000"

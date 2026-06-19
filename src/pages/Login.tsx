@@ -39,14 +39,14 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-base flex items-center justify-center p-4">
+    <div className="min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-bg-base flex flex-col items-center justify-center p-4">
       {/* Background glow effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-accent-primary/5 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl" />
       </div>
 
-      <div className="w-full max-w-sm relative">
+      <div className="w-full max-w-sm sm:max-w-sm relative min-w-0 mx-auto">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-12 h-12 bg-accent-primary/10 border border-accent-primary/20 rounded-2xl mb-4">
@@ -59,7 +59,7 @@ export const Login: React.FC = () => {
         </div>
 
         {/* Card */}
-        <div className="bg-bg-surface border border-border rounded-2xl p-6 shadow-2xl">
+        <div className="bg-bg-surface border border-border rounded-2xl p-5 sm:p-6 shadow-2xl">
           <div className="mb-6">
             <h2 className="text-base font-semibold text-text-primary">Sign in to your workspace</h2>
             <p className="text-xs text-text-muted mt-0.5">Internal access only</p>
@@ -125,7 +125,7 @@ export const Login: React.FC = () => {
           </form>
 
           {/* Demo credentials hint */}
-          <div className="mt-5 p-3 bg-bg-base/50 border border-border/50 rounded-xl">
+          <div className="mt-5 p-3 bg-bg-base/50 border border-border/50 rounded-xl overflow-hidden min-w-0">
             <p className="text-[10px] font-semibold text-text-muted uppercase tracking-wider mb-2">Demo credentials</p>
             <div className="space-y-1">
               {[
@@ -137,10 +137,10 @@ export const Login: React.FC = () => {
                   key={role}
                   type="button"
                   onClick={() => { setEmail(email); setPassword('nexus2026!'); }}
-                  className="w-full text-left px-2 py-1.5 rounded-lg hover:bg-bg-elevated transition-colors group"
+                  className="w-full flex items-center px-2 py-1.5 rounded-lg hover:bg-bg-elevated transition-colors group overflow-hidden"
                 >
-                  <span className="text-[10px] font-semibold text-accent-primary">{role}</span>
-                  <span className="text-[10px] text-text-muted ml-2">{email}</span>
+                  <span className="text-[10px] font-semibold text-accent-primary whitespace-nowrap">{role}</span>
+                  <span className="text-[10px] text-text-muted ml-2 truncate">{email}</span>
                 </button>
               ))}
             </div>

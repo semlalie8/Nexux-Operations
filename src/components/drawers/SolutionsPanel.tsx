@@ -193,7 +193,7 @@ export const SolutionsPanel: React.FC<SolutionsPanelProps> = ({ onClose }) => {
   const { guides: searchGuides, articles: searchArticles } = searchQuery ? searchFiltered(searchQuery) : { guides: [], articles: [] };
 
   return (
-    <div className="flex flex-col h-full bg-bg-surface border-l border-border w-[360px] animate-slide-in relative">
+    <div className="flex flex-col h-full bg-bg-surface border-l border-border w-full md:w-[360px] animate-slide-in relative shrink-0">
       {/* Header */}
       <div className="p-4 border-b border-border flex items-center justify-between gap-2 flex-shrink-0">
         <div className="flex items-center gap-2">

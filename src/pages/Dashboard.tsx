@@ -72,7 +72,7 @@ export const Dashboard: React.FC = () => {
 
       {/* Productivity Section */}
       <section className="bg-bg-surface border border-border rounded-xl p-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-lg bg-accent-primary/10 text-accent-primary">
               <Clock className="w-4 h-4" />
@@ -85,19 +85,19 @@ export const Dashboard: React.FC = () => {
             </div>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2 md:gap-3">
             {/* Toggle empty state button for evaluation/training */}
             <button 
               onClick={() => setShowChartData(!showChartData)}
-              className="text-[10px] text-text-muted hover:text-text-secondary border border-border px-2 py-1 rounded bg-bg-elevated/40"
+              className="text-[10px] text-text-muted hover:text-text-secondary border border-border px-2 py-1.5 rounded bg-bg-elevated/40"
             >
               Toggle Demo Data: {showChartData ? 'ON' : 'OFF'}
             </button>
-            <div className="relative">
+            <div className="relative flex-1 min-w-[120px]">
               <select 
                 value={timeRange} 
                 onChange={(e) => setTimeRange(e.target.value)}
-                className="appearance-none bg-bg-elevated border border-border rounded-lg text-xs text-text-secondary px-3 py-1.5 pr-8 hover:text-text-primary focus:outline-none cursor-pointer"
+                className="w-full appearance-none bg-bg-elevated border border-border rounded-lg text-xs text-text-secondary px-3 py-1.5 pr-8 hover:text-text-primary focus:outline-none cursor-pointer"
               >
                 <option>Last 24 hours</option>
                 <option>Last 7 days</option>
@@ -175,7 +175,7 @@ export const Dashboard: React.FC = () => {
 
       {/* Other Metrics Section */}
       <section className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-lg bg-accent-primary/10 text-accent-primary">
               <TrendingUp className="w-4 h-4" />
@@ -187,8 +187,8 @@ export const Dashboard: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="relative">
-            <select className="appearance-none bg-bg-surface border border-border rounded-lg text-xs text-text-secondary px-3 py-1.5 pr-8 hover:text-text-primary focus:outline-none cursor-pointer">
+          <div className="relative w-full md:w-auto">
+            <select className="w-full md:w-auto appearance-none bg-bg-surface border border-border rounded-lg text-xs text-text-secondary px-3 py-1.5 pr-8 hover:text-text-primary focus:outline-none cursor-pointer">
               <option>This week</option>
               <option>This month</option>
               <option>Last 30 days</option>

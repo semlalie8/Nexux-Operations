@@ -165,7 +165,7 @@ export const Admin: React.FC = () => {
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Team Members', value: team.length, icon: <Users className="w-4 h-4" />, color: 'text-accent-primary' },
           { label: 'Online Now', value: team.filter(m => m.status === 'online').length, icon: <Activity className="w-4 h-4" />, color: 'text-accent-success' },
@@ -303,7 +303,7 @@ export const Admin: React.FC = () => {
           {/* ── ROLES & PERMISSIONS ── */}
           {activeTab === 'roles' && (
             <div className="space-y-4">
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {ALL_ROLES.map(role => (
                   <button
                     key={role}

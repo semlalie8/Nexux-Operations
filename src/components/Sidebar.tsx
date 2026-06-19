@@ -47,21 +47,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
     { icon: Book, label: 'Quick Links', action: () => onOpenDrawer('quicklinks') }, // Book icon (bottom area variant)
   ];
 
-  const sidebarWidth = (isExpanded || isPinned) ? 'w-60' : 'w-[60px]';
+  const sidebarWidth = (isExpanded || isPinned) ? 'md:w-60' : 'md:w-[60px]';
 
   return (
     <aside 
-      className={`fixed top-0 bottom-0 left-0 bg-bg-surface border-r border-border flex flex-col justify-between select-none transition-all duration-200 ease-out z-40 ${sidebarWidth}`}
-      onMouseEnter={() => setIsExpanded(true)}
+      className={`fixed bottom-0 left-0 right-0 h-[64px] md:h-auto md:top-0 md:bottom-0 md:left-0 md:right-auto bg-bg-surface border-t md:border-t-0 md:border-r border-border flex flex-row md:flex-col justify-between md:justify-between items-center md:items-stretch select-none transition-all duration-200 ease-out z-40 px-1 md:px-0 ${sidebarWidth}`}
+      onMouseEnter={() => window.innerWidth >= 768 && setIsExpanded(true)}
       onMouseLeave={() => {
-        setIsExpanded(false);
-        setShowStatusPicker(false);
+        if (window.innerWidth >= 768) {
+          setIsExpanded(false);
+          setShowStatusPicker(false);
+        }
       }}
     >
       {/* Top Navigation */}
-      <div className="flex flex-col py-4">
+      <div className="flex flex-row md:flex-col py-0 md:py-4 flex-1 md:flex-none w-full md:w-auto overflow-x-auto md:overflow-visible overflow-y-hidden">
         {/* Brand / Logo & Pin */}
-        <div className="flex items-center justify-between px-3.5 mb-6 h-8">
+        <div className="hidden md:flex items-center justify-between px-3.5 mb-6 h-8">
           <div className="flex items-center gap-2 overflow-hidden">
             <div className="w-8 h-8 rounded-lg bg-accent-primary flex items-center justify-center font-heading font-black text-white text-base flex-shrink-0">
               N
@@ -85,7 +87,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
         </div>
 
         {/* Primary nav buttons */}
-        <nav className="space-y-1 px-2">
+        <nav className="flex flex-row md:flex-col space-x-1 md:space-x-0 md:space-y-1 px-1 md:px-2 w-full md:w-auto items-center md:items-stretch h-16 md:h-auto py-2 md:py-0">
           {navItems.filter(item => !(item as any).adminOnly || user.role === 'Administrator').map((item, index) => {
             const isRouteActive = item.route && activePath === item.route;
             const Icon = item.icon;
@@ -97,23 +99,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
                   if (item.route) navigate(item.route);
                   if ((item as any).action) (item as any).action();
                 }}
-                className={`w-full h-10 rounded-lg flex items-center gap-3 transition-all group relative px-2.5 ${
+                className={`flex-1 min-w-[50px] md:w-full h-12 md:h-10 rounded-lg flex flex-col md:flex-row items-center justify-center md:justify-start gap-1 md:gap-3 transition-all group relative px-1 md:px-2.5 ${
                   isRouteActive 
-                    ? 'bg-accent-primary text-text-primary font-medium' 
+                    ? 'bg-accent-primary/10 md:bg-accent-primary text-accent-primary md:text-text-primary font-medium' 
                     : 'text-text-muted hover:bg-bg-elevated hover:text-text-secondary'
                 }`}
                 title={!isExpanded && !isPinned ? item.label : undefined}
               >
-                <Icon className={`w-5 h-5 flex-shrink-0 transition-transform ${isRouteActive ? '' : 'group-hover:scale-105'}`} />
+                <Icon className={`w-5 h-5 md:w-5 md:h-5 flex-shrink-0 transition-transform ${isRouteActive ? '' : 'group-hover:scale-105'}`} />
                 {(isExpanded || isPinned) && (
-                  <span className="text-sm truncate font-heading tracking-wide animate-fade-in">
+                  <span className="hidden md:block text-sm truncate font-heading tracking-wide animate-fade-in">
                     {item.label}
                   </span>
                 )}
                 
                 {/* Active indicator bar */}
                 {isRouteActive && !isExpanded && !isPinned && (
-                  <div className="absolute left-0 top-2 bottom-2 w-1 rounded bg-text-primary" />
+                  <div className="hidden md:block absolute left-0 top-2 bottom-2 w-1 rounded bg-text-primary" />
                 )}
               </button>
             );
@@ -122,9 +124,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
       </div>
 
       {/* Bottom Section */}
-      <div className="flex flex-col py-4 border-t border-border/50">
+      <div className="flex flex-row md:flex-col py-0 md:py-4 md:border-t md:border-border/50 items-center md:items-stretch h-full md:h-auto pl-1 md:pl-0 border-l md:border-l-0 border-border/50">
         {/* Utilities */}
-        <div className="space-y-1 px-2 mb-4">
+        <div className="hidden md:block space-y-1 px-2 mb-4">
           {utilityItems.map((item, index) => {
             const Icon = item.icon;
             return (
@@ -145,12 +147,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
           })}
         </div>
 
+        {/* Mobile Settings Icon (visible only on mobile to access Utilities/Settings) */}
+        <div className="md:hidden flex items-center px-1">
+          <button 
+            onClick={() => onOpenDrawer('settings')}
+            className="w-10 h-10 rounded-lg flex flex-col items-center justify-center text-text-muted hover:bg-bg-elevated hover:text-text-secondary transition-all"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+        </div>
+
         {/* User profile / status chip */}
-        <div className="px-2 relative">
+        <div className="px-1 md:px-2 relative h-full flex items-center">
           <div 
             onClick={() => (isExpanded || isPinned) && setShowStatusPicker(!showStatusPicker)}
-            className={`w-full rounded-xl bg-bg-elevated/40 border border-border/40 hover:bg-bg-elevated/80 transition-all p-2 flex items-center justify-between cursor-pointer ${
-              (isExpanded || isPinned) ? 'gap-3' : 'justify-center'
+            className={`w-10 h-10 md:w-full rounded-xl bg-bg-elevated/40 border border-border/40 hover:bg-bg-elevated/80 transition-all p-1 md:p-2 flex items-center justify-center md:justify-between cursor-pointer ${
+              (isExpanded || isPinned) ? 'gap-3' : ''
             }`}
           >
             <div className="flex items-center gap-2.5 overflow-hidden">
@@ -160,7 +172,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
                   alt={user.name} 
                   className="w-8 h-8 rounded-full border border-border object-cover" 
                   onError={(e) => {
-                    // Fallback to initials
                     (e.target as HTMLImageElement).src = `https://api.dicebear.com/7.x/initials/svg?seed=${user.name}`;
                   }}
                 />
@@ -168,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
               </div>
               
               {(isExpanded || isPinned) && (
-                <div className="flex flex-col text-left truncate animate-fade-in">
+                <div className="hidden md:flex flex-col text-left truncate animate-fade-in">
                   <span className="text-xs font-semibold text-text-primary truncate">{user.name}</span>
                   <span className="text-[10px] text-text-muted font-mono">{user.role}</span>
                 </div>
@@ -176,13 +187,15 @@ export const Sidebar: React.FC<SidebarProps> = ({ onOpenDrawer, onOpenSearch }) 
             </div>
 
             {(isExpanded || isPinned) && (
-              <ChevronUp className={`w-4 h-4 text-text-muted transition-transform ${showStatusPicker ? 'rotate-180' : ''}`} />
+              <div className="hidden md:block">
+                <span className={`text-[10px] opacity-60 ${showStatusPicker ? 'rotate-180' : ''}`}>▲</span>
+              </div>
             )}
           </div>
 
           {/* Expanded user actions / picker */}
           {(isExpanded || isPinned) && showStatusPicker && (
-            <div className="absolute bottom-14 left-2 right-2 bg-bg-elevated border border-border rounded-xl shadow-xl p-2 z-50 animate-fade-in">
+            <div className="hidden md:block absolute bottom-14 left-2 right-2 bg-bg-elevated border border-border rounded-xl shadow-xl p-2 z-50 animate-fade-in">
               <div className="text-[10px] text-text-muted px-2 py-1 font-mono uppercase tracking-wider">
                 Select Status
               </div>

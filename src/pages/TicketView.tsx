@@ -507,9 +507,9 @@ export const TicketView: React.FC = () => {
 
       {/* Floating Drawers Overlays (Sliding from Right over Column 2) */}
       {activeRightDrawer && (
-        <div className="fixed inset-y-0 right-0 z-30 flex animate-fade-in shadow-2xl pl-[60px]">
+        <div className="fixed inset-y-0 right-0 z-30 flex animate-fade-in shadow-2xl pl-0 md:pl-[60px] pb-[64px] md:pb-0 w-full md:w-auto">
           {/* Backdrop click to close */}
-          <div className="flex-1 w-[calc(100vw-380px)]" onClick={() => setActiveRightDrawer(null)} />
+          <div className="flex-1" onClick={() => setActiveRightDrawer(null)} />
           
           <div className="flex-shrink-0 relative">
             {activeRightDrawer === 'notes' && (
@@ -530,7 +530,7 @@ export const TicketView: React.FC = () => {
             
             {/* Case Settings (⚙️) Inline Drawer Panel */}
             {activeRightDrawer === 'settings' && (
-              <div className="flex flex-col h-full bg-bg-surface border-l border-border w-[320px] animate-slide-in">
+              <div className="flex flex-col h-full bg-bg-surface border-l border-border w-full md:w-[320px] animate-slide-in">
                 <div className="p-4 border-b border-border flex items-center justify-between">
                   <h2 className="text-sm font-bold font-heading text-text-primary flex items-center gap-1.5">
                     <SettingsIcon className="w-4 h-4 text-accent-primary" />
@@ -570,7 +570,7 @@ export const TicketView: React.FC = () => {
 
             {/* Related Links (🔗) Inline Drawer Panel */}
             {activeRightDrawer === 'links' && (
-              <div className="flex flex-col h-full bg-bg-surface border-l border-border w-[320px] animate-slide-in">
+              <div className="flex flex-col h-full bg-bg-surface border-l border-border w-full md:w-[320px] animate-slide-in">
                 <div className="p-4 border-b border-border flex items-center justify-between">
                   <h2 className="text-sm font-bold font-heading text-text-primary flex items-center gap-1.5">
                     <LinkIcon className="w-4 h-4 text-accent-primary" />
