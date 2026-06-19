@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import { prisma } from '../lib/prisma';
 import { authenticate, requireRole } from '../middleware/auth';
 import { getSystemMode, invalidateModeCache, SystemMode } from '../middleware/systemMode';
+import { updateModeSchema } from '@nexus/shared';
 
 const router = Router();
 
@@ -49,14 +50,14 @@ router.put(
   requireRole('Administrator'),
   async (req: Request, res: Response): Promise<void> => {
     try {
-      const { mode } = req.body as { mode: string };
-
-      if (!VALID_MODES.includes(mode as SystemMode)) {
+      const parsedBody = updateModeSchema.safeParse(req.body);
+      if (!parsedBody.success) {
         res.status(400).json({
           error: `Invalid mode. Must be one of: ${VALID_MODES.join(', ')}`,
         });
         return;
       }
+      const mode = parsedBody.data.mode;
 
       const updatedBy = req.user!.email;
 

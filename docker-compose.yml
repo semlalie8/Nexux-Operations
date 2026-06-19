@@ -22,7 +22,7 @@ services:
   # ── Express API ─────────────────────────────────────────────
   api:
     build:
-      context: ./server
+      context: ./apps/api
       dockerfile: Dockerfile
     container_name: nexus_api
     restart: unless-stopped
@@ -43,7 +43,7 @@ services:
   # ── Vite Frontend ───────────────────────────────────────────
   frontend:
     build:
-      context: .
+      context: ./apps/frontend
       dockerfile: Dockerfile
     container_name: nexus_frontend
     restart: unless-stopped
@@ -55,6 +55,18 @@ services:
     depends_on:
       - api
 
+  # ── Local LLM Inference ─────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: nexus_ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - nexus_ollama_data:/root/.ollama
+
 volumes:
   nexus_postgres_data:
+    driver: local
+  nexus_ollama_data:
     driver: local
