@@ -89,7 +89,9 @@ export const TicketView: React.FC = () => {
     }
   };
 
-  const isReadOnlyMode = user.role === 'Trainee' || !writesAllowed;
+  const isWriteExempt = user.role === 'Administrator' || (user.role === 'Technical Lead' && systemMode === 'p0');
+  const effectivelyWritesAllowed = writesAllowed || isWriteExempt;
+  const isReadOnlyMode = user.role === 'Trainee' || !effectivelyWritesAllowed;
 
   const rightSidebarIcons = [
     { id: 'notes', icon: '✏️', tooltip: 'Case Notes' },
@@ -471,7 +473,7 @@ export const TicketView: React.FC = () => {
                 </button>
               </div>
               {/* System lock overlay on reply form */}
-              {!writesAllowed && (
+              {!effectivelyWritesAllowed && (
                 <div className="flex items-center gap-2 p-3 rounded-xl bg-amber-500/5 border border-amber-500/20 text-amber-400 text-xs mb-2">
                   <span>🔒</span>
                   <span>System is in <span className="font-bold uppercase">{systemMode}</span> mode — replies are disabled.</span>
@@ -602,7 +604,7 @@ export const TicketView: React.FC = () => {
                       <div className="font-bold text-text-primary hover:underline flex items-center gap-1 justify-between">
                         <span>Kibana Log Dashboard</span> ↗
                       </div>
-                      <p className="text-[10px] text-text-muted mt-1">Log searches matching upstream 504 gatewaytimeouts.</p>
+                      <p className="text-[10px] text-text-muted mt-1">Log searches matching upstream 504 gateway timeouts.</p>
                     </a>
                   </div>
                 </div>

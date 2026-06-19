@@ -79,13 +79,13 @@ Client data migrations must comply with GDPR and our SOC 2 Type II controls. Thi
 ## Prerequisites
 
 - Signed data processing agreement (DPA) from client
-- Written authorisation from client DPO or legal counsel  
+- Written authorization from client DPO or legal counsel  
 - Internal sign-off from Security & Compliance team
 
 ## Process Steps
 
 1. Raise a Data Migration Request ticket in Nexus
-2. Attach client authorisation documents
+2. Attach client authorization documents
 3. Get Security Lead sign-off
 4. Schedule migration in the maintenance window
 5. Complete post-migration integrity checks
@@ -250,7 +250,7 @@ const BLANK_ARTICLE: Omit<Article, 'id' | 'views' | 'updatedAt' | 'author' | 'au
 type Mode = 'list' | 'view' | 'create' | 'edit';
 
 export const KnowledgeBase: React.FC = () => {
-  const { user } = useNexusStore();
+  const { user, writesAllowed, systemMode } = useNexusStore();
   const [articles, setArticles] = useState<Article[]>(INITIAL_ARTICLES);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCat, setSelectedCat] = useState('All');
@@ -260,7 +260,10 @@ export const KnowledgeBase: React.FC = () => {
   const [tagInput, setTagInput] = useState('');
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
-  const canEdit = ['Administrator', 'Senior Agent', 'Technical Lead', 'Project Manager'].includes(user.role);
+  const isWriteExempt = user.role === 'Administrator' || (user.role === 'Technical Lead' && systemMode === 'p0');
+  const effectivelyWritesAllowed = writesAllowed || isWriteExempt;
+
+  const canEdit = ['Administrator', 'Senior Agent', 'Technical Lead', 'Project Manager'].includes(user.role) && effectivelyWritesAllowed;
   const canAccessLocked = ['Administrator', 'Senior Agent', 'Technical Lead'].includes(user.role);
 
   const filtered = useMemo(() => {
